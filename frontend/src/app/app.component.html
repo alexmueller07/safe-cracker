@@ -1,0 +1,243 @@
+<div class="app-container">
+    <div class="main-wrapper">
+        <header class="app-header">
+            <h1 class="main-title">
+                <span class="title-word">Safe</span>
+                <span class="title-word">Cracker</span>
+            </h1>
+        </header>
+
+        <div class="content-area">
+            <div class="left-panel">
+                <!-- speed control -->
+                <div class="speed-control">
+                    <label class="speed-label">Speed:</label>
+                    <div class="speed-buttons">
+                        <button *ngFor="let option of speedOptions" class="speed-button"
+                            [class.active]="speedMultiplier === option.value" [disabled]="isCracking"
+                            (click)="onSpeedChange(option.value)" type="button">
+                            {{ option.label }}
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- safe container -->
+                <div class="safe-container">
+                    <div class="safe" [class.cracking]="isCracking" [class.unlocked]="result && !isCracking">
+                        <!-- door -->
+                        <div class="safe-door">
+
+                            <!-- screen -->
+                            <div class="safe-display">
+                                <div class="display-label">Combination</div>
+                                <div class="display-screen">
+                                    <div class="display-digits">
+                                        <span class="display-digit"
+                                            *ngFor="let i of [0,1,2,3,4,5,6,7,8,9]; let idx = index"
+                                            [class.filled]="actualCombination.length > idx"
+                                            [class.cracking]="isCracking">
+                                            {{ actualCombination[idx] || (isCracking ? currentGuess[idx] : '_') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="display-status" *ngIf="isCracking">
+                                    <span class="status-text">Cracking...</span>
+                                    <span class="status-dot pulse"></span>
+                                </div>
+                            </div>
+
+                            <!-- pad -->
+                            <div class="safe-keypad">
+                                <div class="keypad-row">
+                                    <button class="keypad-button" (click)="onKeypadClick('1')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">1</span>
+                                    </button>
+
+
+                                    <button class="keypad-button" (click)="onKeypadClick('2')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">2</span>
+                                    </button>
+                                    <button class="keypad-button" (click)="onKeypadClick('3')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">3</span>
+                                    </button>
+                                </div>
+                                <div class="keypad-row">
+                                    <button class="keypad-button" (click)="onKeypadClick('4')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">4</span>
+                                    </button>
+                                    <button class="keypad-button" (click)="onKeypadClick('5')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">5</span>
+                                    </button>
+                                    <button class="keypad-button" (click)="onKeypadClick('6')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">6</span>
+                                    </button>
+                                </div>
+
+                                <div class="keypad-row">
+                                    <button class="keypad-button" (click)="onKeypadClick('7')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">7</span>
+                                    </button>
+                                    <button class="keypad-button" (click)="onKeypadClick('8')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">8</span>
+                                    </button>
+                                    <button class="keypad-button" (click)="onKeypadClick('9')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">9</span>
+                                    </button>
+                                </div>
+                                <div class="keypad-row">
+                                    <button class="keypad-button clear-button" (click)="onClear()"
+                                        [disabled]="isCracking" type="button">
+                                        <span class="button-text">CLR</span>
+                                    </button>
+                                    <button class="keypad-button" (click)="onKeypadClick('0')"
+                                        [disabled]="isCracking || actualCombination.length >= 10" type="button">
+                                        <span class="button-number">0</span>
+                                    </button>
+                                    <button class="keypad-button backspace-button" (click)="onBackspace()"
+                                        [disabled]="isCracking" type="button">
+                                        <span class="button-text">⌫</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- crack safe button -->
+                            <button class="crack-safe-button" (click)="onSubmit()"
+                                [disabled]="isCracking || actualCombination.length !== 10"
+                                [class.active]="actualCombination.length === 10 && !isCracking"
+                                [class.cracking]="isCracking" type="button">
+                                <span class="button-label">{{ isCracking ? 'Cracking...' : 'Crack Safe' }}</span>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="right-panel">
+                <!-- progress section -->
+                <div class="progress-section" *ngIf="isCracking" @fadeIn>
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <h3 class="progress-title">
+                                <span class="pulse-dot"></span>
+                                Decrypting Combination...
+                            </h3>
+                        </div>
+
+                        <div class="progress-content">
+                            <!-- stats grid -->
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-info">
+                                        <span class="stat-label">Attempts</span>
+                                        <span class="stat-value animate-number">{{ currentAttempts | number }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="stat-card">
+                                    <div class="stat-info">
+                                        <span class="stat-label">Speed</span>
+                                        <span class="stat-value animate-number">{{ attemptsPerSecond | number:'1.0-1'
+                                            }}/s</span>
+                                    </div>
+                                </div>
+
+                                <div class="stat-card">
+                                    <div class="stat-info">
+                                        <span class="stat-label">Progress</span>
+                                        <span class="stat-value animate-number">{{ progressPercentage | number:'1.0-0'
+                                            }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- display -->
+                            <div class="guess-display">
+                                <div class="guess-label">Current Attempt:</div>
+                                <div class="guess-digits">
+                                    <span class="digit-box" *ngFor="let digit of currentGuess.split(''); let i = index"
+                                        [class.matched]="result && result.found_combination && result.found_combination[i] === digit">
+                                        {{ digit }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- progress bar -->
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" [style.width.%]="progressPercentage">
+                                        <div class="progress-bar-shine"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- results output -->
+                <div class="results-section" *ngIf="result && !isCracking" @slideUp>
+                    <div class="result-card success">
+                        <div class="result-header">
+                            <h3 class="result-title">Safe Successfully Cracked!</h3>
+                        </div>
+
+                        <div class="result-content">
+                            <div class="result-main">
+                                <div class="result-combination">
+                                    <span class="result-label">Found Combination:</span>
+                                    <div class="combination-display">
+                                        <span class="combination-digit"
+                                            *ngFor="let digit of result.found_combination?.split('')">
+                                            {{ digit }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="result-stats">
+                                <div class="result-stat">
+                                    <div class="result-stat-content">
+                                        <span class="result-stat-label">Total Attempts</span>
+                                        <span class="result-stat-value">{{ result.attempts | number }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="result-stat">
+                                    <div class="result-stat-content">
+                                        <span class="result-stat-label">Time Elapsed</span>
+                                        <span class="result-stat-value">{{ result.time_taken }}s</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- errors -->
+                <div class="error-section" *ngIf="error" @shake>
+                    <div class="error-card">
+                        <div class="error-content">
+                            <span class="error-title">Error</span>
+                            <span class="error-message">{{ error }}</span>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
