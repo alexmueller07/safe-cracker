@@ -50,7 +50,7 @@ The frontend will start on `http://localhost:4200`
 ### Step 3: Test
 
 1. Open your browser and go to `http://localhost:4200`
-2. Enter a 10-digit combination (e.g., "0800666666")
+2. Enter a 10-digit combination (e.g., "1234567890")
 3. Optionally check "Enable real-time progress tracking" for live updates
 4. Click "Crack Safe"
 5. View the results!
